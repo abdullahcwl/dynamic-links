@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.cwl.coda",
+            "sha256_cert_fingerprints": [
+                "03:AB:14:10:1B:C1:A5:00:82:BC:A2:44:55:77:5D:8E:6F:BD:75:B4:1B:38:68:73:1D:D4:02:F2:CB:70:27:A9"
+            ]
+        }
+    }
+]
