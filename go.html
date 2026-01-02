@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Opening CODA…</title>
+
+  <!-- iOS Smart Banner (optional but recommended) 
+   Dummy content link (replace when live) -->
+  <meta name="apple-itunes-app" content="app-id=0000000000" />
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const path = params.get("path") || "";
+    params.delete("path");
+
+    const query = params.toString();
+    const fullPath = query ? `${path}?${query}` : path;
+
+    const domain = "https://dynamic-links-bay.vercel.app";
+
+    // Universal / App Links
+    const iosAppLink = `${domain}${fullPath}`;
+    const androidAppLink = `${domain}${fullPath}`;
+
+    // Dummy store links (replace only iosStore when live)
+    const iosStore = "https://apps.apple.com/app/id0000000000";
+    const androidStore =
+      "https://play.google.com/store/apps/details?id=com.cwl.coda";
+
+    const ua = navigator.userAgent || navigator.vendor;
+
+    function openApp() {
+      if (/iPad|iPhone|iPod/.test(ua)) {
+        window.location.href = iosAppLink;
+        setTimeout(() => {
+          window.location.href = iosStore;
+        }, 1500);
+      } else if (/android/i.test(ua)) {
+        window.location.href = androidAppLink;
+        setTimeout(() => {
+          window.location.href = androidStore;
+        }, 1500);
+      } else {
+        // Desktop fallback
+        window.location.href = domain;
+      }
+    }
+
+    window.onload = openApp;
+  </script>
+</head>
+<body>
+  <p>Opening CODA…</p>
+</body>
+</html>
