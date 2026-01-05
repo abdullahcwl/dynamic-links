@@ -19,6 +19,7 @@
 
       // Universal/App Links
       const appLink = `${domain}${fullPath}`;
+      console.log("App Link:", appLink);
 
       // Store links (dummy for now)
       const iosStore = "https://apps.apple.com/app/id0000000000";
@@ -30,6 +31,7 @@
       function openApp() {
         if (/iPad|iPhone|iPod/.test(ua)) {
           // Open the app via Universal Link (iOS handles it)
+          console.log("iOS detected, attempting to open app. App Link:", appLink);
           window.location.href = appLink;
 
           // Fallback to App Store if app not installed
@@ -37,6 +39,7 @@
             window.location.href = iosStore;
           }, 2000);
         } else if (/android/i.test(ua)) {
+          console.log("Android detected, attempting to open app. App Link:", appLink);
           // Android
           window.location.href = appLink;
           setTimeout(() => {
