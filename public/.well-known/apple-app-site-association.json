@@ -1,11 +1,11 @@
 {
   "applinks": {
+    "apps": [],
     "details": [
       {
         "appID": "LFC2P6KJAA.com.ardur.coda",
         "paths": [
-          "/playscreen",
-          "/playscreen/*"
+          "*"
         ]
       }
     ]
