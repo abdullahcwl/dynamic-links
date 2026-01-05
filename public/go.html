@@ -17,8 +17,8 @@
 
       const domain = "https://dynamic-links-bay.vercel.app";
 
-      // Universal/App Links
-      const appLink = `${domain}${fullPath}`;
+      // Universal Link: only used for app opening, not browser fallback
+      const appLink = `${domain}${path}?${query}`;
       console.log("App Link:", appLink);
 
       // Store links (dummy for now)
