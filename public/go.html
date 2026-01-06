@@ -66,7 +66,25 @@
         }
       });
 
-      window.onload = openApp;
+      function tryAndroid() {
+        const domain = window.location.origin;
+        const universal = `${domain}${fullPath}`;
+
+        // TRY APP FIRST
+        window.location.href = universal;
+
+        fallbackTimer = setTimeout(() => {
+          window.location.href = androidStore;
+        }, 2000);
+      }
+
+      window.onload = () => {
+        if (/android/i.test(ua)) {
+          tryAndroid();
+        } else {
+          openApp();
+        }
+      };
     </script>
   </head>
 
