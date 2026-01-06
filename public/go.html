@@ -35,7 +35,7 @@
 
       function openApp() {
         const iosScheme = `coda://${fullPath}`;
-        const androidUniversal = `coda://${fullPath}`;
+        const androidUniversal = `${domain}${fullPath}`;
 
         if (/iPad|iPhone|iPod/.test(ua)) {
           // Try to open iOS app via scheme
