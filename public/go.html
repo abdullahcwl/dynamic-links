@@ -20,38 +20,45 @@
       const query = params.toString();
       const fullPath = query ? `${path}?${query}` : path;
 
-      const domain = "https://dynamic-links-bay.vercel.app";
-      const appLink = `${domain}${fullPath}`;
+      // Always redirect back to THIS domain
+      const domain = window.location.origin;
 
-      // Store links (replace when live)
-      const iosStore =
-        "https://apps.apple.com/pk/app/whatsapp-messenger/id310633997";
+      // Fallback store links (replace with REAL CODA store URLs when live)
+      const iosStore = "https://apps.apple.com/pk/app/coda/whatsapp-messenger/id310633997";
+
       const androidStore =
         "https://play.google.com/store/apps/details?id=com.whatsapp";
-      <!-- // "https://play.google.com/store/apps/details?id=com.cwl.coda"; -->
 
       const ua = navigator.userAgent || navigator.vendor;
       let fallbackTimer;
 
       function openApp() {
-        if (/iPad|iPhone|iPod/.test(ua)) {
-          window.location.href = appLink;
+        const iosScheme = `coda://${fullPath}`;
+        const androidScheme = `intent://${fullPath}#Intent;scheme=coda;package=com.cwl.coda;end;`;
 
+        if (/iPad|iPhone|iPod/.test(ua)) {
+          // Try to open iOS app via scheme
+          window.location.href = iosScheme;
+
+          // If app not installed → open App Store
           fallbackTimer = setTimeout(() => {
             window.location.href = iosStore;
           }, 2000);
         } else if (/android/i.test(ua)) {
-          window.location.href = appLink;
+          // Try to open Android app via intent
+          window.location.href = androidScheme;
 
+          // If app not installed → open Play Store
           fallbackTimer = setTimeout(() => {
             window.location.href = androidStore;
           }, 2000);
         } else {
+          // Desktop or unknown platform → stay on site
           window.location.href = domain;
         }
       }
 
-      // If app opens, page becomes hidden → cancel fallback
+      // If app actually opens, cancel fallback
       document.addEventListener("visibilitychange", () => {
         if (document.hidden && fallbackTimer) {
           clearTimeout(fallbackTimer);
@@ -61,6 +68,7 @@
       window.onload = openApp;
     </script>
   </head>
+
   <body>
     <p>Opening CODA…</p>
   </body>
