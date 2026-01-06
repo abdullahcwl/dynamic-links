@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Opening CODA…</title>
+
+    <!-- iOS Smart Banner (replace app-id when live) -->
+    <meta name="apple-itunes-app" content="app-id=0000000000" />
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const path = params.get("path");
+
+      // Safety: no path → go to homepage
+      if (!path) {
+        window.location.href = "/";
+      }
+
+      params.delete("path");
+      const query = params.toString();
+      const fullPath = query ? `${path}?${query}` : path;
+
+      const domain = "https://dynamic-links-bay.vercel.app";
+      const appLink = `${domain}${fullPath}`;
+
+      // Store links (replace when live)
+      const iosStore = "https://apps.apple.com/app/id0000000000";
+      const androidStore =
+        "https://play.google.com/store/apps/details?id=com.cwl.coda";
+
+      const ua = navigator.userAgent || navigator.vendor;
+      let fallbackTimer;
+
+      function openApp() {
+        if (/iPad|iPhone|iPod/.test(ua)) {
+          window.location.href = appLink;
+
+          fallbackTimer = setTimeout(() => {
+            window.location.href = iosStore;
+          }, 2000);
+        } else if (/android/i.test(ua)) {
+          window.location.href = appLink;
+
+          fallbackTimer = setTimeout(() => {
+            window.location.href = androidStore;
+          }, 2000);
+        } else {
+          window.location.href = domain;
+        }
+      }
+
+      // If app opens, page becomes hidden → cancel fallback
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && fallbackTimer) {
+          clearTimeout(fallbackTimer);
+        }
+      });
+
+      window.onload = openApp;
+    </script>
+  </head>
+  <body>
+    <p>Opening CODA…</p>
+  </body>
+</html>
