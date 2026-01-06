@@ -24,17 +24,18 @@
       const domain = window.location.origin;
 
       // Fallback store links (replace with REAL CODA store URLs when live)
-      const iosStore = "https://apps.apple.com/pk/app/coda/whatsapp-messenger/id310633997";
+      const iosStore =
+        "https://apps.apple.com/pk/app/coda/whatsapp-messenger/id310633997";
 
       const androidStore =
-        "https://play.google.com/store/apps/details?id=com.whatsapp";
+        "https://play.google.com/store/apps/details?id=com.cwl.coda";
 
       const ua = navigator.userAgent || navigator.vendor;
       let fallbackTimer;
 
       function openApp() {
         const iosScheme = `coda://${fullPath}`;
-        const androidScheme = `intent://${fullPath}#Intent;scheme=coda;package=com.cwl.coda;end;`;
+        const androidUniversal = `coda://${fullPath}`;
 
         if (/iPad|iPhone|iPod/.test(ua)) {
           // Try to open iOS app via scheme
@@ -46,7 +47,7 @@
           }, 2000);
         } else if (/android/i.test(ua)) {
           // Try to open Android app via intent
-          window.location.href = androidScheme;
+          window.location.href = androidUniversal;
 
           // If app not installed → open Play Store
           fallbackTimer = setTimeout(() => {
