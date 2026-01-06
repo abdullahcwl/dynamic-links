@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <title>Opening CODA…</title>
 
+    <!-- iOS Smart Banner (replace app-id when live) -->
     <meta name="apple-itunes-app" content="app-id=0000000000" />
 
     <script>
       const params = new URLSearchParams(window.location.search);
       const path = params.get("path");
 
+      // Safety: no path → go to homepage
       if (!path) {
         window.location.href = "/";
       }
@@ -18,9 +20,12 @@
       const query = params.toString();
       const fullPath = query ? `${path}?${query}` : path;
 
+      // Always redirect back to THIS domain
       const domain = window.location.origin;
 
-      const iosStore = "https://apps.apple.com/pk/app/coda/idXXXXXXXXX";
+      // Fallback store links (replace with REAL CODA store URLs when live)
+      const iosStore =
+        "https://apps.apple.com/pk/app/coda/whatsapp-messenger/id310633997";
 
       const androidStore =
         "https://play.google.com/store/apps/details?id=com.cwl.coda";
@@ -28,37 +33,40 @@
       const ua = navigator.userAgent || navigator.vendor;
       let fallbackTimer;
 
-      function launchAndroid() {
-        const universal = `${domain}${fullPath}`;
-        window.location.href = universal;
-
-        fallbackTimer = setTimeout(() => {
-          window.location.href = androidStore;
-        }, 2000);
-      }
-
-      function launchIOS() {
+      function openApp() {
         const iosScheme = `coda://${fullPath}`;
-        window.location.href = iosScheme;
+        const androidUniversal = `${domain}${fullPath}`;
 
-        fallbackTimer = setTimeout(() => {
-          window.location.href = iosStore;
-        }, 2000);
+        if (/iPad|iPhone|iPod/.test(ua)) {
+          // Try to open iOS app via scheme
+          window.location.href = iosScheme;
+
+          // If app not installed → open App Store
+          fallbackTimer = setTimeout(() => {
+            window.location.href = iosStore;
+          }, 2000);
+        } else if (/android/i.test(ua)) {
+          // Try to open Android app via intent
+          window.location.href = androidUniversal;
+
+          // If app not installed → open Play Store
+          fallbackTimer = setTimeout(() => {
+            window.location.href = androidStore;
+          }, 2000);
+        } else {
+          // Desktop or unknown platform → stay on site
+          window.location.href = domain;
+        }
       }
 
-      window.onload = () => {
-        if (/android/i.test(ua)) {
-          launchAndroid();
-        } else {
-          launchIOS();
-        }
-      };
-
+      // If app actually opens, cancel fallback
       document.addEventListener("visibilitychange", () => {
         if (document.hidden && fallbackTimer) {
           clearTimeout(fallbackTimer);
         }
       });
+
+      window.onload = openApp;
     </script>
   </head>
 
