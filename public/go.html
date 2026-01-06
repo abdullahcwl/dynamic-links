@@ -33,44 +33,8 @@
       const ua = navigator.userAgent || navigator.vendor;
       let fallbackTimer;
 
-      function openApp() {
-        const iosScheme = `coda://${fullPath}`;
-        const androidUniversal = `${domain}${fullPath}`;
-
-        if (/iPad|iPhone|iPod/.test(ua)) {
-          // Try to open iOS app via scheme
-          window.location.href = iosScheme;
-
-          // If app not installed → open App Store
-          fallbackTimer = setTimeout(() => {
-            window.location.href = iosStore;
-          }, 2000);
-        } else if (/android/i.test(ua)) {
-          // Try to open Android app via intent
-          window.location.href = androidUniversal;
-
-          // If app not installed → open Play Store
-          fallbackTimer = setTimeout(() => {
-            window.location.href = androidStore;
-          }, 2000);
-        } else {
-          // Desktop or unknown platform → stay on site
-          window.location.href = domain;
-        }
-      }
-
-      // If app actually opens, cancel fallback
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden && fallbackTimer) {
-          clearTimeout(fallbackTimer);
-        }
-      });
-
-      function tryAndroid() {
-        const domain = window.location.origin;
+      function launchAndroid() {
         const universal = `${domain}${fullPath}`;
-
-        // TRY APP FIRST
         window.location.href = universal;
 
         fallbackTimer = setTimeout(() => {
@@ -78,13 +42,28 @@
         }, 2000);
       }
 
+      function launchIOS() {
+        const iosScheme = `coda://${fullPath}`;
+        window.location.href = iosScheme;
+
+        fallbackTimer = setTimeout(() => {
+          window.location.href = iosStore;
+        }, 2000);
+      }
+
       window.onload = () => {
         if (/android/i.test(ua)) {
-          tryAndroid();
+          launchAndroid();
         } else {
-          openApp();
+          launchIOS();
         }
       };
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && fallbackTimer) {
+          clearTimeout(fallbackTimer);
+        }
+      });
     </script>
   </head>
 
