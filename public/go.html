@@ -33,37 +33,40 @@
       const ua = navigator.userAgent || navigator.vendor;
       let fallbackTimer;
 
-      function launchAndroid() {
-        const universal = `${domain}${fullPath}`;
-        window.location.href = universal;
-
-        fallbackTimer = setTimeout(() => {
-          window.location.href = androidStore;
-        }, 2000);
-      }
-
-      function launchIOS() {
+      function openApp() {
         const iosScheme = `coda://${fullPath}`;
-        window.location.href = iosScheme;
+        const androidUniversal = `${domain}${fullPath}`;
 
-        fallbackTimer = setTimeout(() => {
-          window.location.href = iosStore;
-        }, 2000);
+        if (/iPad|iPhone|iPod/.test(ua)) {
+          // Try to open iOS app via scheme
+          window.location.href = iosScheme;
+
+          // If app not installed → open App Store
+          fallbackTimer = setTimeout(() => {
+            window.location.href = iosStore;
+          }, 2000);
+        } else if (/android/i.test(ua)) {
+          // Try to open Android app via intent
+          window.location.href = androidUniversal;
+
+          // If app not installed → open Play Store
+          fallbackTimer = setTimeout(() => {
+            window.location.href = androidStore;
+          }, 2000);
+        } else {
+          // Desktop or unknown platform → stay on site
+          window.location.href = domain;
+        }
       }
 
-      window.onload = () => {
-        if (/android/i.test(ua)) {
-          launchAndroid();
-        } else {
-          launchIOS();
-        }
-      };
-
+      // If app actually opens, cancel fallback
       document.addEventListener("visibilitychange", () => {
         if (document.hidden && fallbackTimer) {
           clearTimeout(fallbackTimer);
         }
       });
+
+      window.onload = openApp;
     </script>
   </head>
 
